@@ -1,0 +1,15 @@
+@model mvc.Models.Teacher
+
+<h1>Create Teacher</h1>
+
+<form asp-action="Create">
+    <div>
+        <label>Firstname:</label>
+        <input asp-for="Firstname" />
+    </div>
+    <div>
+        <label>Lastname:</label>
+        <input asp-for="Lastname" />
+    </div>
+    <button type="submit">Save</button>
+</form>

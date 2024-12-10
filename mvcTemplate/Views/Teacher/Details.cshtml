@@ -1,0 +1,13 @@
+@model mvc.Models.Teacher
+
+<h1>Delete Teacher</h1>
+
+<p>Are you sure you want to delete this teacher?</p>
+<p><strong>Firstname:</strong> @Model.Firstname</p>
+<p><strong>Lastname:</strong> @Model.Lastname</p>
+
+<form asp-action="DeleteConfirmed">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Delete</button>
+    <a asp-action="Index">Cancel</a>
+</form>

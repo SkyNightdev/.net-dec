@@ -1,0 +1,16 @@
+@model mvc.Models.Student
+
+<h1>Edit Student</h1>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div>
+        <label>Firstname:</label>
+        <input asp-for="Firstname" />
+    </div>
+    <div>
+        <label>Lastname:</label>
+        <input asp-for="Lastname" />
+    </div>
+    <button type="submit">Save Changes</button>
+</form>

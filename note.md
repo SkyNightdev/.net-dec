@@ -31,6 +31,7 @@ BDD -> entité (permet d'éviter des données brutes dans les controllers)
 Installation de Pomelo et d'un autre outil : dotnet tool install --global dotnet-ef
 
 
+<<<<<<< HEAD
 
 ## Fonctionnement général
 

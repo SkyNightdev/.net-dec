@@ -1,11 +1,19 @@
-namespace mvc.Models;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
-public class Teacher
+namespace mvcTemplate.Models
 {
-    public int Id { get; set; }
-    public string Firstname { get; set; }
-    public string Lastname { get; set; }
+    public class Teacher : IdentityUser
+    {
+        [Required(ErrorMessage = "Le prénom est requis.")]
+        [StringLength(50)]
+        public string Firstname { get; set; } = string.Empty;
 
-    // Propriété calculée pour afficher le nom complet
-    public string Name => $"{Firstname} {Lastname}";
+        [Required(ErrorMessage = "Le nom est requis.")]
+        [StringLength(50)]
+        public string Lastname { get; set; } = string.Empty;
+
+        [Url(ErrorMessage = "URL invalide.")]
+        public string PersonalWebSite { get; set; } = string.Empty;
+    }
 }

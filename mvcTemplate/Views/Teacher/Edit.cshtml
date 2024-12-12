@@ -1,16 +1,28 @@
-@model mvc.Models.Teacher
+@model mvcTemplate.Models.Teacher
 
-<h1>Edit Teacher</h1>
+<h1>Modifier un enseignant</h1>
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
-    <div>
-        <label>Firstname:</label>
-        <input asp-for="Firstname" />
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="Id"></label>
+        <input asp-for="Id" class="form-control" readonly />
     </div>
-    <div>
-        <label>Lastname:</label>
-        <input asp-for="Lastname" />
+    <div class="form-group">
+        <label asp-for="Firstname"></label>
+        <input asp-for="Firstname" class="form-control" />
     </div>
-    <button type="submit">Save Changes</button>
+    <div class="form-group">
+        <label asp-for="Lastname"></label>
+        <input asp-for="Lastname" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="PersonalWebSite"></label>
+        <input asp-for="PersonalWebSite" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
 </form>

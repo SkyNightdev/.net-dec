@@ -1,13 +1,17 @@
-@model mvc.Models.Student
+@model mvcTemplate.Models.Student
 
-<h1>Delete Student</h1>
+<h1>Supprimer un étudiant</h1>
+<p>Voulez-vous vraiment supprimer cet étudiant ?</p>
+<ul>
+    <li>Prénom : @Model.Firstname</li>
+    <li>Nom : @Model.Lastname</li>
+    <li>Âge : @Model.Age</li>
+    <li>GPA : @Model.GPA</li>
+    <li>Spécialisation : @Model.Major</li>
+</ul>
 
-<p>Are you sure you want to delete this student?</p>
-<p><strong>Firstname:</strong> @Model.Firstname</p>
-<p><strong>Lastname:</strong> @Model.Lastname</p>
-
-<form asp-action="DeleteConfirmed">
+<form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
-    <button type="submit">Delete</button>
-    <a asp-action="Index">Cancel</a>
+    <button type="submit" class="btn btn-danger">Confirmer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
 </form>

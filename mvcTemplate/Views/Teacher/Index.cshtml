@@ -1,24 +1,28 @@
-@model IEnumerable<mvc.Models.Teacher>
+<h1>Liste des étudiants</h1>
 
-<h1>Teachers</h1>
-<a asp-action="Create">Add New Teacher</a>
-
-<table>
-    <tr>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Actions</th>
-    </tr>
-    @foreach (var teacher in Model)
-    {
+<table class="table">
+    <thead>
         <tr>
-            <td>@teacher.Firstname</td>
-            <td>@teacher.Lastname</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@teacher.Id">Details</a> |
-                <a asp-action="Edit" asp-route-id="@teacher.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@teacher.Id">Delete</a>
-            </td>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Actions</th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var teacher in Model)
+        {
+            <tr>
+                <td>@teacher.Lastname</td>
+                <td>@teacher.Firstname</td>
+                <td>@teacher.Email</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@teacher.Id" class="btn btn-primary">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@teacher.Id" class="btn btn-danger">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
 </table>
+
+<a asp-action="Add" class="btn btn-success">Ajouter un enseignant</a>

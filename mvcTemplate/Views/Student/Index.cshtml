@@ -1,14 +1,16 @@
-﻿@model IEnumerable<mvc.Models.Student>
+﻿@model List<mvcTemplate.Models.Student>
 
-<h1>Student List</h1>
+<h1>Liste des étudiants</h1>
 
-<a asp-action="Create">Add New Student</a>
-
-<table>
+<table class="table">
     <thead>
         <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
+            <th>Prénom</th>
+            <th>Nom</th>
+            <th>Âge</th>
+            <th>Spécialisation</th>
+            <th>GPA</th>
+            <th>Enseignant</th> <!-- Nouvelle colonne pour afficher l'enseignant -->
             <th>Actions</th>
         </tr>
     </thead>
@@ -18,12 +20,22 @@
             <tr>
                 <td>@student.Firstname</td>
                 <td>@student.Lastname</td>
+                <td>@student.Age</td>
+                <td>@student.Major</td>
+                <td>@student.GPA</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@student.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@student.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@student.Id">Delete</a>
+                    @(ViewBag.Teachers.ContainsKey(student.TeacherId) 
+                        ? ViewBag.Teachers[student.TeacherId] 
+                        : "Non assigné")
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@student.Id" class="btn btn-warning">Modifier</a>
+                    <a asp-action="Delete" asp-route-id="@student.Id" class="btn btn-danger">Supprimer</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<a asp-action="Add" class="btn btn-primary">Ajouter un étudiant</a>

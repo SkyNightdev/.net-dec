@@ -1,96 +1,96 @@
 using Microsoft.AspNetCore.Mvc;
-using mvc.Models;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using mvcTemplate.Models;
+using mvcTemplate.Data;
 
-public class StudentController : Controller
+namespace mvcTemplate.Controllers
 {
-    private static List<Student> _students = new List<Student>
+    public class StudentController : Controller
     {
-        new Student { Id = 1, Firstname = "Alice", Lastname = "Johnson" },
-        new Student { Id = 2, Firstname = "Bob", Lastname = "Williams" }
-    };
+        private readonly ApplicationDbContext _context;
 
-    public IActionResult Index()
-    {
-        return View(_students);
-    }
-
-    public IActionResult Details(int id)
-    {
-        var student = _students.FirstOrDefault(s => s.Id == id);
-        if (student == null)
+        public StudentController(ApplicationDbContext context)
         {
-            return NotFound();
+            _context = context;
         }
-        return View(student);
-    }
 
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Create(Student student)
-    {
-        if (ModelState.IsValid)
+        public IActionResult Index()
         {
-            student.Id = _students.Any() ? _students.Max(s => s.Id) + 1 : 1;
-            _students.Add(student);
-            return RedirectToAction(nameof(Index));
+            // Inclut l'enseignant associé à chaque étudiant
+            var students = _context.Students.Include(s => s.Teacher).ToList();
+            return View(students);
         }
-        return View(student);
-    }
 
-    public IActionResult Edit(int id)
-    {
-        var student = _students.FirstOrDefault(s => s.Id == id);
-        if (student == null)
+        [HttpGet]
+        public IActionResult Add()
         {
-            return NotFound();
+            // Passe la liste des enseignants à la vue
+            ViewBag.Teachers = _context.Teachers.ToList();
+            return View();
         }
-        return View(student);
-    }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Edit(Student student)
-    {
-        if (ModelState.IsValid)
+        [HttpPost]
+        public IActionResult Add(Student student)
         {
-            var existingStudent = _students.FirstOrDefault(s => s.Id == student.Id);
-            if (existingStudent == null)
+            if (ModelState.IsValid)
+            {
+                _context.Students.Add(student);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Teachers = _context.Teachers.ToList();
+            return View(student);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var student = _context.Students.FirstOrDefault(s => s.Id == id);
+            if (student == null)
             {
                 return NotFound();
             }
-            existingStudent.Firstname = student.Firstname;
-            existingStudent.Lastname = student.Lastname;
-            return RedirectToAction(nameof(Index));
-        }
-        return View(student);
-    }
 
-    public IActionResult Delete(int id)
-    {
-        var student = _students.FirstOrDefault(s => s.Id == id);
-        if (student == null)
-        {
-            return NotFound();
+            ViewBag.Teachers = _context.Teachers.ToList();
+            return View(student);
         }
-        return View(student);
-    }
 
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteConfirmed(int id)
-    {
-        var student = _students.FirstOrDefault(s => s.Id == id);
-        if (student != null)
+        [HttpPost]
+        public IActionResult Edit(Student student)
         {
-            _students.Remove(student);
+            if (ModelState.IsValid)
+            {
+                _context.Students.Update(student);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Teachers = _context.Teachers.ToList();
+            return View(student);
         }
-        return RedirectToAction(nameof(Index));
+
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            var student = _context.Students.FirstOrDefault(s => s.Id == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var student = _context.Students.FirstOrDefault(s => s.Id == id);
+            if (student != null)
+            {
+                _context.Students.Remove(student);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

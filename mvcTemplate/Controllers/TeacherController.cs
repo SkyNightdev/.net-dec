@@ -1,60 +1,46 @@
 using Microsoft.AspNetCore.Mvc;
-using mvc.Models;
-using System.Collections.Generic;
-using System.Linq;
+using mvcTemplate.Data;
+using mvcTemplate.Models;
 
-namespace mvc.Controllers
+namespace mvcTemplate.Controllers
 {
     public class TeacherController : Controller
     {
-        // Liste statique d'enseignants simulant une base de données
-        private static List<Teacher> _teachers = new List<Teacher>
-        {
-            new Teacher { Id = 1, Firstname = "John", Lastname = "Doe" },
-            new Teacher { Id = 2, Firstname = "Jane", Lastname = "Smith" }
-        };
+        private readonly ApplicationDbContext _context;
 
-        // Action : Affiche la liste des enseignants
+        public TeacherController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            return View(_teachers);
+            var teachers = _context.Teachers.ToList(); // Récupère les enseignants depuis la BDD
+            return View(teachers);
         }
 
-        // Action : Détails d'un enseignant
-        public IActionResult Details(int id)
-        {
-            var teacher = _teachers.FirstOrDefault(t => t.Id == id);
-            if (teacher == null)
-            {
-                return NotFound();
-            }
-            return View(teacher);
-        }
-
-        // GET : Formulaire de création
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Add()
         {
             return View();
         }
 
-        // POST : Ajout d'un nouvel enseignant
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(Teacher teacher)
+        public IActionResult Add(Teacher teacher)
         {
             if (ModelState.IsValid)
             {
-                teacher.Id = _teachers.Any() ? _teachers.Max(t => t.Id) + 1 : 1;
-                _teachers.Add(teacher);
-                return RedirectToAction(nameof(Index));
+                _context.Teachers.Add(teacher); // Ajoute un enseignant dans la BDD
+                _context.SaveChanges(); // Enregistre les modifications
+                return RedirectToAction("Index");
             }
             return View(teacher);
         }
 
-        // GET : Formulaire d'édition
-        public IActionResult Edit(int id)
+        [HttpGet]
+        public IActionResult Edit(string id)
         {
-            var teacher = _teachers.FirstOrDefault(t => t.Id == id);
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == id);
             if (teacher == null)
             {
                 return NotFound();
@@ -62,29 +48,22 @@ namespace mvc.Controllers
             return View(teacher);
         }
 
-        // POST : Mise à jour d'un enseignant
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Edit(Teacher teacher)
         {
             if (ModelState.IsValid)
             {
-                var existingTeacher = _teachers.FirstOrDefault(t => t.Id == teacher.Id);
-                if (existingTeacher == null)
-                {
-                    return NotFound();
-                }
-                existingTeacher.Firstname = teacher.Firstname;
-                existingTeacher.Lastname = teacher.Lastname;
-                return RedirectToAction(nameof(Index));
+                _context.Teachers.Update(teacher); // Met à jour l'enseignant
+                _context.SaveChanges();
+                return RedirectToAction("Index");
             }
             return View(teacher);
         }
 
-        // GET : Formulaire de suppression
-        public IActionResult Delete(int id)
+        [HttpGet]
+        public IActionResult Delete(string id)
         {
-            var teacher = _teachers.FirstOrDefault(t => t.Id == id);
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == id);
             if (teacher == null)
             {
                 return NotFound();
@@ -92,17 +71,29 @@ namespace mvc.Controllers
             return View(teacher);
         }
 
-        // POST : Confirmation de suppression
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(string id)
         {
-            var teacher = _teachers.FirstOrDefault(t => t.Id == id);
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == id);
             if (teacher != null)
             {
-                _teachers.Remove(teacher);
+                _context.Teachers.Remove(teacher); // Supprime l'enseignant
+                _context.SaveChanges();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Students(string id)
+        {
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == id);
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            var students = _context.Students.Where(s => s.TeacherId == id).ToList();
+            ViewBag.TeacherName = $"{teacher.Firstname} {teacher.Lastname}";
+            return View(students);
         }
     }
 }
